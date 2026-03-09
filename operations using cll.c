@@ -10,7 +10,6 @@ struct Node
 struct Node *head = NULL;
 struct Node *tail = NULL;
 
-// Insert at Beginning
 void insertBegin(int x)
 {
     struct Node *temp = (struct Node*)malloc(sizeof(struct Node));
@@ -25,11 +24,10 @@ void insertBegin(int x)
     {
         temp->next = head;
         head = temp;
-        tail->next = head;   // maintain circular link
+        tail->next = head;
     }
 }
 
-// Insert at End
 void insertEnd(int x)
 {
     struct Node *temp = (struct Node*)malloc(sizeof(struct Node));
@@ -44,11 +42,47 @@ void insertEnd(int x)
     {
         tail->next = temp;
         tail = temp;
-        tail->next = head;   // maintain circular link
+        tail->next = head;
     }
 }
 
-// Delete from Beginning
+void insertAtPos(int x, int pos)
+{
+    if (pos < 1)
+    {
+        printf("Invalid Position\n");
+        return;
+    }
+    if (pos == 1)
+    {
+        insertBegin(x);
+        return;
+    }
+
+    struct Node *temp = (struct Node*)malloc(sizeof(struct Node));
+    temp->data = x;
+    struct Node *curr = head;
+
+    for (int i = 1; i < pos - 1; i++)
+    {
+        curr = curr->next;
+        if (curr == head)
+        {
+            printf("Position out of bounds\n");
+            free(temp);
+            return;
+        }
+    }
+
+    temp->next = curr->next;
+    curr->next = temp;
+
+    if (curr == tail)
+    {
+        tail = temp;
+    }
+}
+
 void deleteBegin()
 {
     if(head == NULL)
@@ -57,7 +91,7 @@ void deleteBegin()
         return;
     }
 
-    if(head == tail)   // only one node
+    if(head == tail)
     {
         printf("Deleted: %d\n", head->data);
         free(head);
@@ -73,7 +107,6 @@ void deleteBegin()
     }
 }
 
-// Delete from End
 void deleteEnd()
 {
     if(head == NULL)
@@ -82,7 +115,7 @@ void deleteEnd()
         return;
     }
 
-    if(head == tail)   // only one node
+    if(head == tail)
     {
         printf("Deleted: %d\n", tail->data);
         free(tail);
@@ -101,7 +134,43 @@ void deleteEnd()
     }
 }
 
-// Display
+void deleteAtPos(int pos)
+{
+    if (head == NULL || pos < 1)
+    {
+        printf("List empty or invalid position\n");
+        return;
+    }
+    if (pos == 1)
+    {
+        deleteBegin();
+        return;
+    }
+
+    struct Node *curr = head;
+    struct Node *prev = NULL;
+
+    for (int i = 1; i < pos; i++)
+    {
+        prev = curr;
+        curr = curr->next;
+        if (curr == head)
+        {
+            printf("Position out of bounds\n");
+            return;
+        }
+    }
+
+    printf("Deleted: %d\n", curr->data);
+    prev->next = curr->next;
+
+    if (curr == tail)
+    {
+        tail = prev;
+    }
+    free(curr);
+}
+
 void display()
 {
     if(head == NULL)
@@ -122,17 +191,19 @@ void display()
 
 int main()
 {
-    int choice, x;
+    int choice, x, pos;
 
     while(1)
     {
         printf("\n--- CLL(HEAD & TAIL) ---\n");
-        printf("1. Insert Begin\n");
-        printf("2. Insert End\n");
-        printf("3. Delete Begin\n");
-        printf("4. Delete End\n");
-        printf("5. Display\n");
-        printf("6. Exit\n");
+        printf("1. Insert Head\n");
+        printf("2. Insert Tail\n");
+        printf("3. Insert at Position\n");
+        printf("4. Delete Head\n");
+        printf("5. Delete Tail\n");
+        printf("6. Delete at Position\n");
+        printf("7. Display\n");
+        printf("8. Exit\n");
 
         scanf("%d", &choice);
 
@@ -151,18 +222,30 @@ int main()
                 break;
 
             case 3:
-                deleteBegin();
+                printf("Enter data and position: ");
+                scanf("%d %d", &x, &pos);
+                insertAtPos(x, pos);
                 break;
 
             case 4:
-                deleteEnd();
+                deleteBegin();
                 break;
 
             case 5:
-                display();
+                deleteEnd();
                 break;
 
             case 6:
+                printf("Enter position: ");
+                scanf("%d", &pos);
+                deleteAtPos(pos);
+                break;
+
+            case 7:
+                display();
+                break;
+
+            case 8:
                 exit(0);
 
             default:
