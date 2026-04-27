@@ -23,3 +23,19 @@ int main()
     {
         scanf("%d", &a[i]);
     }
+
+    
+    printf("Enter element to search: ");
+    scanf("%d", &key);
+
+    
+    result = linearSearch(a, n, key);
+
+    
+    if(result == -1)
+        printf("Element not found\n");
+    else
+        printf("Element found at position %d\n", result + 1);
+
+    return 0;
+}
